@@ -43,40 +43,40 @@ public:
 		return *this;
 	}
 
-	UnrealEasyPrintImpl& operator<<(const FString& Input) {
-		AddText(Input);
-		return *this;
+	#define AddShiftOperator(Type, Expr)\
+	UnrealEasyPrintImpl& operator<<(const Type Input) {\
+		AddText(Expr);\
+		return *this;\
 	}
 
-	UnrealEasyPrintImpl& operator<<(const std::nullptr_t) {
-		AddText("nullptr");
-		return *this;
-	}
-	
-	UnrealEasyPrintImpl& operator<<(const int Input) {
-		AddText(FString::FromInt(Input));
-		return *this;
-	}
+	// Primitives
+	AddShiftOperator(std::nullptr_t, "nullptr")
+	AddShiftOperator(bool, Input ? TEXT("true") : TEXT("false"))
+	AddShiftOperator(void*, FString::Printf(TEXT("%p"), Input))
+	AddShiftOperator(char*, Input != nullptr ? Input : FString(TEXT("nullptr")))
 
-	UnrealEasyPrintImpl& operator<<(const float Input) {
-		AddText(FString::SanitizeFloat(Input));
-		return *this;
-	}
+	// Numbers
+	AddShiftOperator(int32, FString::FromInt(Input))
+	AddShiftOperator(char, FString::Printf(TEXT("%c"), Input))
+	AddShiftOperator(unsigned char, FString::Printf(TEXT("%u"), Input))
+	AddShiftOperator(short, FString::Printf(TEXT("%hd"), Input))
+	AddShiftOperator(unsigned short, FString::Printf(TEXT("%hu"), Input))
+	AddShiftOperator(long, FString::Printf(TEXT("%ld"), Input))
+	AddShiftOperator(unsigned long, FString::Printf(TEXT("%lu"), Input))
+	AddShiftOperator(long long, FString::Printf(TEXT("%lld"), Input))
+	AddShiftOperator(unsigned long long, FString::Printf(TEXT("%llu"), Input))
+	AddShiftOperator(float, FString::SanitizeFloat(Input))
+	AddShiftOperator(double, FString::SanitizeFloat(Input))
+	AddShiftOperator(long double, FString::Printf(TEXT("%Lg"), Input))
 
-	UnrealEasyPrintImpl& operator<<(const bool Input) {
-		AddText(Input ? TEXT("true") : TEXT("false"));
-		return *this;
-	}
+	// Strings
+	AddShiftOperator(FString&, Input)
+	AddShiftOperator(std::string&, Input)
 
-	UnrealEasyPrintImpl& operator<<(const char* Input) {
-		AddText(Input);
-		return *this;
-	}
+	// Unreal Objects
+	AddShiftOperator(UObject*, Input != nullptr ? Input->GetName() : FString(TEXT("nullptr")))
 
-	UnrealEasyPrintImpl& operator<<(const std::string& Input) {
-		AddText(Input);
-		return *this;
-	}
+	#undef AddShiftOperator
 	
 	template<typename T>
 	UnrealEasyPrintImpl& operator()(T Input) {
