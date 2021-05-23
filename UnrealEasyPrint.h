@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #define uelog UnrealEasyPrintImpl<false, 0>()
 #define uewarn UnrealEasyPrintImpl<false, 1>()
 #define ueerror UnrealEasyPrintImpl<false, 2>()
@@ -34,6 +36,22 @@ public:
 	void AddText(const FString& Input) {
 		Output += (Output.IsEmpty() ? "" : " ") + Input;
 	}
+
+	template<typename T>
+	UnrealEasyPrintImpl& operator<<(const T& Input) {
+		AddText(Input.ToString());
+		return *this;
+	}
+
+	UnrealEasyPrintImpl& operator<<(const FString& Input) {
+		AddText(Input);
+		return *this;
+	}
+
+	UnrealEasyPrintImpl& operator<<(const std::nullptr_t) {
+		AddText("nullptr");
+		return *this;
+	}
 	
 	UnrealEasyPrintImpl& operator<<(const int Input) {
 		AddText(FString::FromInt(Input));
@@ -49,9 +67,27 @@ public:
 		AddText(Input ? TEXT("true") : TEXT("false"));
 		return *this;
 	}
+
+	UnrealEasyPrintImpl& operator<<(const char* Input) {
+		AddText(Input);
+		return *this;
+	}
+
+	UnrealEasyPrintImpl& operator<<(const std::string& Input) {
+		AddText(Input);
+		return *this;
+	}
 	
-	UnrealEasyPrintImpl& operator<<(const FVector& Input) {
-		AddText(Input.ToString());
+	template<typename T>
+	UnrealEasyPrintImpl& operator()(T Input) {
+		operator<<(Input);
+		return *this;
+	}
+	
+	template<typename T, typename ...Args>
+	UnrealEasyPrintImpl& operator()(T Input, Args... args) {
+		operator<<(Input);
+		operator()(args...);
 		return *this;
 	}
 	
