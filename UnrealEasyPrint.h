@@ -22,7 +22,7 @@ public:
 			constexpr bool IsError = Level == 2;
 			if constexpr(IsShow) {
 				if(GEngine) {
-					constexpr FColor Color = IsLog ? FColor::White : (IsWarning ? FColor::Yellow : FColor::Red);
+					const FColor Color = IsLog ? FColor::White : (IsWarning ? FColor::Yellow : FColor::Red);
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, Color, Output);
 				}
 			} else {
