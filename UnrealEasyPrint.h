@@ -71,6 +71,7 @@ public:
 
 	// Strings
 	AddShiftOperator(FString&, Input)
+	AddShiftOperator(TCHAR*, Input)
 	AddShiftOperator(std::string&, Input)
 
 	// Unreal Objects
