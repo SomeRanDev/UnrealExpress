@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "Containers/Array.h"
 
 #define uelog UnrealEasyPrintImpl<false, 0>()
 #define uewarn UnrealEasyPrintImpl<false, 1>()
@@ -40,6 +41,17 @@ public:
 	template<typename T>
 	UnrealEasyPrintImpl& operator<<(const T& Input) {
 		AddText(Input.ToString());
+		return *this;
+	}
+
+	template<typename T>
+	UnrealEasyPrintImpl& operator<<(const TArray<T>& Input) {
+		AddText("{ ");
+		for(auto& Item : Input) {
+			operator<<(Item);
+			AddText(", ");
+		}
+		AddText(" }");
 		return *this;
 	}
 
